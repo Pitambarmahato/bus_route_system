@@ -24,8 +24,10 @@ class BusOperate(BaseModel):
     def clean(self):
         if self.from_time > self.to_time:
             raise ValidationError("From Time Should be less than to time.")
-        if __class__.objects.filter(Q(bus_id=self.bus.id, from_time__lte=self.from_time, to_time__gte=self.from_time) or Q(bus_id=self.bus.id, from_time__lte=self.to_time, to_time__gte=self.to_time)).exists():
+        if __class__.objects.filter(Q(bus_id=self.bus.id, from_time__lte=self.from_time, to_time__gte=self.from_time)
+                                     or Q(bus_id=self.bus.id, from_time__lte=self.to_time, to_time__gte=self.to_time)).exists():
             raise ValidationError("This Bus already operating in another route.")
-        if __class__.objects.filter(Q(bus_id=self.bus.id, from_time__range=(self.from_time, self.to_time)) or Q(bus_id=self.bus.id, to_time__range=(self.from_time, self.to_time))).exists():
+        if __class__.objects.filter(Q(bus_id=self.bus.id, from_time__range=(self.from_time, self.to_time))
+                                     or Q(bus_id=self.bus.id, to_time__range=(self.from_time, self.to_time))).exists():
             raise ValidationError("Bus already operating in another route.")
         return self.bus
